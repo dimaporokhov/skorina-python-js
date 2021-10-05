@@ -5,7 +5,7 @@ try:
     LST_LEN = int(input("input the length of int list\n"))
     print(f"input {LST_LEN} int elements to create a list")
 
-    lst = [int(input()) for _ in range(LST_LEN)]
+    lst = [int(input(f"a[{i}]=")) for i in range(LST_LEN)]
     print("the source is a list of int numbers --> ", *lst)
 
     result = {"even": 0, "not_even": 0}

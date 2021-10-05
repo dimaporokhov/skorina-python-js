@@ -6,7 +6,7 @@ def create_lst(el_type: type):
     """create list"""
     lst_len = int(float(input(f"input length of {el_type} list\n")))
     print(f"input {lst_len} elements of {el_type} of the list")
-    lst = [el_type(input()) for _ in range(lst_len)]
+    lst = [el_type(input(f"a[{i}]=")) for i in range(lst_len)]
     print(f"the source is a list of {el_type} numbers --> ", *lst)
     return lst
 
