@@ -3,31 +3,27 @@
 
 
 def create_lst(el_type: type):
-    try:
-        lst_len = int(input(f"input length of {el_type} list\n"))
-        print(f"input {lst_len} int elements of the list")
-        lst = [el_type(input()) for _ in range(lst_len)]
-        print(f"the source is a list of {el_type} numbers --> ", *lst)
-        return lst
-    except ValueError:
-        print("input should be a number")
+    """create list"""
+    lst_len = int(float(input(f"input length of {el_type} list\n")))
+    print(f"input {lst_len} elements of {el_type} of the list")
+    lst = [el_type(input()) for _ in range(lst_len)]
+    print(f"the source is a list of {el_type} numbers --> ", *lst)
+    return lst
 
 
 def replace_by_7(lst: list) -> None:
     """lab1"""
-    try:
-        result = {"even": 0, "not_even": 0}
-        for i, el in enumerate(lst):
-            if el > 7:
-                lst[i] = 7
-                if i % 2 == 0:
-                    result["even"] += 1
-                elif i % 2 != 0:
-                    result["not_even"] += 1
-        print(lst)
-        print(result)
-    except ValueError:
-        print("input should be a number")
+    result = {"even": 0, "not_even": 0}
+    for i, el in enumerate(lst):
+        if el > 7:
+            lst[i] = 7
+            if i % 2 == 0:
+                result["even"] += 1
+            elif i % 2 != 0:
+                result["not_even"] += 1
+    print(f"result list --> {lst}")
+    print(f"amount of even indices which element is more than 7 --> {result['even']}")
+    print(f"amount of not even indices which element is more than 7 --> {result['not_even']}")
 
 
 if __name__ == '__main__':
@@ -36,5 +32,5 @@ if __name__ == '__main__':
         replace_by_7(int_lst)
         float_lst = create_lst(float)
         replace_by_7(float_lst)
-    except TypeError:
-        print("something went wrong, look above for more info")
+    except ValueError:
+        print("input should be a valid number")
