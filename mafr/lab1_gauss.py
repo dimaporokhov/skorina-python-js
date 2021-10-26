@@ -29,7 +29,7 @@ N = len(prices_lst) - 1
 print("hi = ln(S[i+1] / S[i])")
 h = [log(prices_lst[i+1] / prices_lst[i]) for i in range(N)]
 for i, el in enumerate(h):
-    print(f"h{i + 1} --> {el}")
+    print(f"h{i + 1} --> {round(el, 3)}")
 print("\n")
 for i in range(N + 1):
     print(f"S{i + 1} --> {prices_lst[i]}")
