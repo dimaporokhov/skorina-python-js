@@ -38,7 +38,7 @@ T = sum(h) / N
 S2 = sum(el**2 - 2*el*T + T**2 for el in h) / (N - 1)
 S = sqrt(S2)
 
-print(f"\nT --> {T}")
+print(f"\nµ̂ --> {T}")
 print(f"S2 --> {S2}")
 print(f"S --> {S}\n")
 
