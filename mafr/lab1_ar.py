@@ -37,6 +37,9 @@ for i in range(N + 1):
     print(f"S{i + 1} --> {prices_lst[i]}")
 
 
+print(f"\nСлучайные значения --> {En}")
+
+
 sum_hi = sum(h[i] for i in range(1, len(h)))
 sum_hi_1 = sum(h[i] for i in range(len(h) - 1))
 sum_hi_1_2 = sum_hi_1**2

@@ -37,6 +37,8 @@ for i in range(N + 1):
     print(f"S{i + 1} --> {prices_lst[i]}")
 
 
+print(f"\nСлучайные значения --> {En}")
+
 T = sum(h) / N
 print(f"\nµ̂ --> {T}")
 
