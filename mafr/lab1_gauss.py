@@ -40,20 +40,30 @@ S = sqrt(S2)
 
 print(f"\nµ̂ --> {T}")
 print(f"S2 --> {S2}")
-print(f"S --> {S}\n")
+print(f"σ̂ --> {S}\n")
 
-h_extra = [T + S * el for el in En]
-S_extra = [exp(h_extra[0]) * prices_lst[10]]
+hn = [T + S * el for el in En]
+S_extra = [exp(hn[0]) * prices_lst[10]]
 for i in range(1, 5):
-    s = exp(h_extra[i]) * S_extra[i - 1]
+    s = exp(hn[i]) * S_extra[i - 1]
     S_extra.append(s)
 
 
-print("hn = T + S * En")
 print(f"Случайные значения En --> {En}")
-print("Модельные значения = exp(hn) * S[i-1]\n")
 
-for i in range(len(h_extra)):
-    print(f"h1{i + 1} --> {round(h_extra[i], 3)}")
-    print(f"S1{i + 1} --> model = {round(S_extra[i], 2)}  real = {prices_extra_lst[i]}")
-print("Модельные значения довольно выгодные, и в 3 из 5 случаях выгоднее, чем реальные")
+
+print("\nhn = T + σ̂ * En")
+for i in range(len(hn)):
+    print(f"{round(hn[i], 4)}")
+
+
+print("\nМодельные значения = exp(hn) * S[i-1]")
+print("S")
+print("model     real")
+for i in range(len(hn)):
+    print(f"{round(S_extra[i], 2)}    "
+          f"{prices_extra_lst[i]}    "
+          f"{'model' if S_extra[i] < prices_extra_lst[i] else 'real'}")
+
+print("Модельные значения довольно выгодные, и в 3 из 5 случаях выгоднее, чем реальные,"
+      " но это плохо бы сказалось на компании")
