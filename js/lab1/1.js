@@ -38,7 +38,7 @@ function getResult() {
     min = Math.min(...finish_arr)
     if (min < 2)
         for(let i = 0; i < n; i++)
-            if (i % 2 == 0)
+            if (arr[i] < 0)
                 finish_arr[i] *= finish_arr[i];
 
     if (min >= 2)

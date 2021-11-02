@@ -3,6 +3,7 @@
 //под главной диагональю. В противном случае матрицу оставить без изменения. 
 function getResult(){
     let counter = 0;
+    let counter1 = 0;
     let result = [];
     for(let i = 0; i < n; i++) result.push(arr[i].slice())
 
@@ -13,10 +14,15 @@ function getResult(){
     let arifm = "not all elements on the main diagonal";
     if (counter == n){
         arifm = 0;
+        counter1 = 0;
         for(let i = 0; i < n; i++)
             for(let j = 0; j < n; j++)
-                if (j < i)
+                if (j < i){
                     arifm += result[i][j];
+                    counter1 = counter1 + 1;
+                }
+        arifm /= counter1;
+
 
         for(let i = 0; i < n; i++)
             for(let j = 0; j < n; j++)
