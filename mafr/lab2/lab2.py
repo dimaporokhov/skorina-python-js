@@ -27,47 +27,48 @@ prices_extra_lst = list(prices_extra.values())
 
 N = len(prices_lst) - 1
 
-factor_lst = [[(prices_lst[i + 1][0] - prices_lst[i][0]) / prices_lst[i][0],
-               (prices_lst[i + 1][1] - prices_lst[i][1]) / prices_lst[i][1],
-               (prices_lst[i + 1][2] - prices_lst[i][2]) / prices_lst[i][2],
-               (prices_lst[i + 1][3] - prices_lst[i][3]) / prices_lst[i][3]]
-              for i in range(N)]
+factor_lst_x = [(prices_lst[i + 1][0] - prices_lst[i][0]) / prices_lst[i][0] for i in range(N)]
+factor_lst_y = [(prices_lst[i + 1][1] - prices_lst[i][1]) / prices_lst[i][1] for i in range(N)]
+factor_lst_z = [(prices_lst[i + 1][2] - prices_lst[i][2]) / prices_lst[i][2] for i in range(N)]
+factor_lst_i = [(prices_lst[i + 1][3] - prices_lst[i][3]) / prices_lst[i][3] for i in range(N)]
 
 print("Однофакторная модель")
-for i, el in enumerate(factor_lst):
-    print(f"r{i + 1} ", *el)
+for i in range(N):
+    print(f"r{i + 1} ", factor_lst_x[i], factor_lst_y[i], factor_lst_z[i], factor_lst_i[i])
 
 
-hx = [log(prices_lst[i + 1][0] / prices_lst[i][0]) for i in range(N)]
-hy = [log(prices_lst[i + 1][1] / prices_lst[i][1]) for i in range(N)]
-hz = [log(prices_lst[i + 1][2] / prices_lst[i][2]) for i in range(N)]
-hn = [log(prices_lst[i + 1][3] / prices_lst[i][3]) for i in range(N)]
+Tx = sum(factor_lst_x) / N
+Ty = sum(factor_lst_y) / N
+Tz = sum(factor_lst_z) / N
+Ti = sum(factor_lst_i) / N
+print(f"\nT --> {Tx, Ty, Tz, Ti}")
 
-Tx = sum(hx) / N
-Ty = sum(hy) / N
-Tz = sum(hz) / N
-Tn = sum(hn) / N
-print(f"\nT --> {Tx, Ty, Tz, Tn}")
-
-S2x = sum(el**2 - 2*el*Tx + Tx**2 for el in hx) / (N - 1)
-S2y = sum(el**2 - 2*el*Ty + Ty**2 for el in hy) / (N - 1)
-S2z = sum(el**2 - 2*el*Tz + Tz**2 for el in hz) / (N - 1)
-S2n = sum(el**2 - 2*el*Tn + Tn**2 for el in hn) / (N - 1)
-print(f"S2 --> {S2x, S2y, S2z, S2n}")
+S2x = sum(el**2 - 2*el*Tx + Tx**2 for el in factor_lst_x) / (N - 1)
+S2y = sum(el**2 - 2*el*Ty + Ty**2 for el in factor_lst_y) / (N - 1)
+S2z = sum(el**2 - 2*el*Tz + Tz**2 for el in factor_lst_z) / (N - 1)
+S2i = sum(el**2 - 2*el*Ti + Ti**2 for el in factor_lst_i) / (N - 1)
+print(f"S2 --> {S2x, S2y, S2z, S2i}")
 
 Sx = sqrt(S2x)
 Sy = sqrt(S2y)
 Sz = sqrt(S2z)
-Sn = sqrt(S2n)
-print(f"S --> {Sx, Sy, Sz, Sn}")
+Si = sqrt(S2i)
+print(f"S --> {Sx, Sy, Sz, Si}")
 
 
-# rxy = ((sum(el[0] * el[1] for el in factor_lst) - Tx * Ty) / N) / (Sx * Sy)
-# rxz = ((sum(el[0] * el[2] for el in factor_lst) - Tx * Tz) / N) / (Sx * Sz)
-# ryz = ((sum(el[1] * el[2] for el in factor_lst) - Ty * Tz) / N) / (Sy * Sz)
-# print(f"\nr1,2 = {rxy}, r1,3 = {rxz}, r2,3 = {ryz}")
-
-rxn = ((sum(el[0] * el[3] for el in factor_lst) - Tx * Tn) / N) / (Sx * Sn)
-ryn = ((sum(el[1] * el[3] for el in factor_lst) - Ty * Tn) / N) / (Sy * Sn)
-rzn = ((sum(el[2] * el[3] for el in factor_lst) - Tz * Tn) / N) / (Sz * Sn)
+rxn = (sum((factor_lst_x[i] - Tx) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sx * Si)
+ryn = (sum((factor_lst_y[i] - Ty) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sy * Si)
+rzn = (sum((factor_lst_z[i] - Tz) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sz * Si)
 print(f"\nr1,Ri = {rxn}, r2,Ri = {ryn}, r3,Ri = {rzn}")
+
+
+print("\nri-μi=ρiI*(Si/SI)*(RI-μI)")
+Ri = symbols('Ri')
+rx = Tx + rxn * (Sx / Si) * (Ri - Ti)
+ry = Ty + ryn * (Sy / Si) * (Ri - Ti)
+rz = Tz + rzn * (Sz / Si) * (Ri - Ti)
+print(f"rx = {rx}\n"
+      f"ry = {ry}\n"
+      f"rz = {rz}\n")
+
+print("Оценка аддекватности")
