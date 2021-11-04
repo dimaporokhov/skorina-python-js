@@ -1,5 +1,5 @@
-from math import log, exp, sqrt
-from sympy import solve, symbols
+from math import sqrt
+from sympy import symbols
 from scipy import stats
 
 prices = {'10-09-2021': [332.75, 327.41, 420.5, 1728.63],
@@ -14,17 +14,21 @@ prices = {'10-09-2021': [332.75, 327.41, 420.5, 1728.63],
           '23-09-2021': [344.29, 325.44, 825, 1751],
           '24-09-2021': [355.19, 331.68, 986, 1765.25]}
 
-prices_extra = {'27-09-2021': [354.07, 329.3, 968, 1785],
-                '28-09-2021': [360.88, 328.43, 992, 1750],
-                '29-09-2021': [360.8, 340.99, 903.5, 1768.1],
-                '30-09-2021': [363.25, 338.48, 987.5, 1762.3],
-                '01-09-2021': [376.06, 345.85, 134.5, 1775.5]}
+# prices_extra = {'27-09-2021': [354.07, 329.3, 968, 1785],
+#                 '28-09-2021': [360.88, 328.43, 992, 1750],
+#                 '29-09-2021': [360.8, 340.99, 903.5, 1768.1],
+#                 '30-09-2021': [363.25, 338.48, 987.5, 1762.3],
+#                 '01-09-2021': [376.06, 345.85, 134.5, 1775.5]}
+#
+# # случайные значения
+# En = [0.523532435, -1.238524874, -0.220835545, 0.789807473, 0.475431534, 0.895547601]
 
-# случайные значения
-En = [0.523532435, -1.238524874, -0.220835545, 0.789807473, 0.475431534, 0.895547601]
+ADEKVAT = "Fn >= Fkr --> модель адекватная"
+NEADEKVAT = "Fn < Fkr --> модель неадекватная"
+
 
 prices_lst = list(prices.values())
-prices_extra_lst = list(prices_extra.values())
+# prices_extra_lst = list(prices_extra.values())
 
 N = len(prices_lst) - 1
 
@@ -74,9 +78,10 @@ rxi_lst = [Tx + rxi * (Sx / Si) * (el - Ti) for el in factor_lst_i]
 ryi_lst = [Ty + ryi * (Sy / Si) * (el - Ti) for el in factor_lst_i]
 rzi_lst = [Tz + rzi * (Sz / Si) * (el - Ti) for el in factor_lst_i]
 
+Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
+
 
 print("Оценка аддекватности x")
-Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
 print("H0:	β=0\n"
       "H1:	β≠0")
 print(f"Fcr = {Fcr}")
@@ -84,14 +89,16 @@ TSSx = sum((factor_lst_x[i] - Tx)**2 for i in range(N))
 ESSx = sum((factor_lst_x[i] - rxi_lst[i])**2 for i in range(N))
 RSSx = sum((rxi_lst[i] - Tx)**2 for i in range(N))
 R2x = RSSx / TSSx  # 1 - ESSx / TSSx
+Fnx = R2x / (1 - R2x) * (N - 2)
 print(f"RSS = {RSSx}\n"
       f"ESS = {ESSx}\n"
       f"TSS = {TSSx}\n"
-      f"R2 = {R2x}\n")
+      f"R2 = {R2x}\n"
+      f"Fn = {Fnx}\n"
+      f"{ADEKVAT if Fnx >= Fcr else NEADEKVAT}\n")
 
 
 print("Оценка аддекватности y")
-Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
 print("H0:	β=0\n"
       "H1:	β≠0")
 print(f"Fcr = {Fcr}")
@@ -99,14 +106,16 @@ TSSy = sum((factor_lst_y[i] - Ty)**2 for i in range(N))
 ESSy = sum((factor_lst_y[i] - ryi_lst[i])**2 for i in range(N))
 RSSy = sum((ryi_lst[i] - Ty)**2 for i in range(N))
 R2y = RSSy / TSSy  # 1 - ESSy / TSSy
+Fny = R2y / (1 - R2y) * (N - 2)
 print(f"RSS = {RSSy}\n"
       f"ESS = {ESSy}\n"
       f"TSS = {TSSy}\n"
-      f"R2 = {R2y}\n")
+      f"R2 = {R2y}\n"
+      f"Fn = {Fny}\n"
+      f"{ADEKVAT if Fny >= Fcr else NEADEKVAT}\n")
 
 
 print("Оценка аддекватности z")
-Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
 print("H0:	β=0\n"
       "H1:	β≠0")
 print(f"Fcr = {Fcr}")
@@ -114,7 +123,10 @@ TSSz = sum((factor_lst_z[i] - Tz)**2 for i in range(N))
 ESSz = sum((factor_lst_z[i] - rzi_lst[i])**2 for i in range(N))
 RSSz = sum((rzi_lst[i] - Tz)**2 for i in range(N))
 R2z = RSSz / TSSz  # 1 - ESSz / TSSz
+Fnz = R2z / (1 - R2z) * (N - 2)
 print(f"RSS = {RSSz}\n"
       f"ESS = {ESSz}\n"
       f"TSS = {TSSz}\n"
-      f"R2 = {R2z}\n")
+      f"R2 = {R2z}\n"
+      f"Fn = {Fnz}\n"
+      f"{ADEKVAT if Fnz >= Fcr else NEADEKVAT}\n")
