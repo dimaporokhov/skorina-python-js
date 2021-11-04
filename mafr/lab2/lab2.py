@@ -1,5 +1,6 @@
 from math import log, exp, sqrt
 from sympy import solve, symbols
+from scipy import stats
 
 prices = {'10-09-2021': [332.75, 327.41, 420.5, 1728.63],
           '13-09-2021': [338.98, 326.48, 570, 1765.29],
@@ -56,19 +57,64 @@ Si = sqrt(S2i)
 print(f"S --> {Sx, Sy, Sz, Si}")
 
 
-rxn = (sum((factor_lst_x[i] - Tx) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sx * Si)
-ryn = (sum((factor_lst_y[i] - Ty) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sy * Si)
-rzn = (sum((factor_lst_z[i] - Tz) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sz * Si)
-print(f"\nr1,Ri = {rxn}, r2,Ri = {ryn}, r3,Ri = {rzn}")
+rxi = (sum((factor_lst_x[i] - Tx) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sx * Si)
+ryi = (sum((factor_lst_y[i] - Ty) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sy * Si)
+rzi = (sum((factor_lst_z[i] - Tz) * (factor_lst_i[i] - Ti) for i in range(N)) / (N - 1)) / (Sz * Si)
+print(f"\nr1,Ri = {rxi}, r2,Ri = {ryi}, r3,Ri = {rzi}")
 
 
 print("\nri-μi=ρiI*(Si/SI)*(RI-μI)")
 Ri = symbols('Ri')
-rx = Tx + rxn * (Sx / Si) * (Ri - Ti)
-ry = Ty + ryn * (Sy / Si) * (Ri - Ti)
-rz = Tz + rzn * (Sz / Si) * (Ri - Ti)
-print(f"rx = {rx}\n"
-      f"ry = {ry}\n"
-      f"rz = {rz}\n")
+print(f"rx = {Tx + rxi * (Sx / Si) * (Ri - Ti)}\n"
+      f"ry = {Ty + ryi * (Sy / Si) * (Ri - Ti)}\n"
+      f"rz = {Tz + rzi * (Sz / Si) * (Ri - Ti)}\n")
 
-print("Оценка аддекватности")
+
+rxi_lst = [Tx + rxi * (Sx / Si) * (el - Ti) for el in factor_lst_i]
+ryi_lst = [Ty + ryi * (Sy / Si) * (el - Ti) for el in factor_lst_i]
+rzi_lst = [Tz + rzi * (Sz / Si) * (el - Ti) for el in factor_lst_i]
+
+
+print("Оценка аддекватности x")
+Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
+print("H0:	β=0\n"
+      "H1:	β≠0")
+print(f"Fcr = {Fcr}")
+TSSx = sum((factor_lst_x[i] - Tx)**2 for i in range(N))
+ESSx = sum((factor_lst_x[i] - rxi_lst[i])**2 for i in range(N))
+RSSx = sum((rxi_lst[i] - Tx)**2 for i in range(N))
+R2x = RSSx / TSSx  # 1 - ESSx / TSSx
+print(f"RSS = {RSSx}\n"
+      f"ESS = {ESSx}\n"
+      f"TSS = {TSSx}\n"
+      f"R2 = {R2x}\n")
+
+
+print("Оценка аддекватности y")
+Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
+print("H0:	β=0\n"
+      "H1:	β≠0")
+print(f"Fcr = {Fcr}")
+TSSy = sum((factor_lst_y[i] - Ty)**2 for i in range(N))
+ESSy = sum((factor_lst_y[i] - ryi_lst[i])**2 for i in range(N))
+RSSy = sum((ryi_lst[i] - Ty)**2 for i in range(N))
+R2y = RSSy / TSSy  # 1 - ESSy / TSSy
+print(f"RSS = {RSSy}\n"
+      f"ESS = {ESSy}\n"
+      f"TSS = {TSSy}\n"
+      f"R2 = {R2y}\n")
+
+
+print("Оценка аддекватности z")
+Fcr = stats.f.ppf(q=1-0.05, dfn=1, dfd=N-2)
+print("H0:	β=0\n"
+      "H1:	β≠0")
+print(f"Fcr = {Fcr}")
+TSSz = sum((factor_lst_z[i] - Tz)**2 for i in range(N))
+ESSz = sum((factor_lst_z[i] - rzi_lst[i])**2 for i in range(N))
+RSSz = sum((rzi_lst[i] - Tz)**2 for i in range(N))
+R2z = RSSz / TSSz  # 1 - ESSz / TSSz
+print(f"RSS = {RSSz}\n"
+      f"ESS = {ESSz}\n"
+      f"TSS = {TSSz}\n"
+      f"R2 = {R2z}\n")
