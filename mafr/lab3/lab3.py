@@ -27,11 +27,11 @@ factor_lst_z = [(prices_lst[i + 1][2] - prices_lst[i][2]) / prices_lst[i][2] for
 Tx = sum(factor_lst_x) / N
 Ty = sum(factor_lst_y) / N
 Tz = sum(factor_lst_z) / N
-
+print(f"\nT --> {Tx, Ty, Tz}")
 c11 = sum(el**2 - 2*el*Tx + Tx**2 for el in factor_lst_x) / (N - 1)  # S2x
 c22 = sum(el**2 - 2*el*Ty + Ty**2 for el in factor_lst_y) / (N - 1)  # S2y
 c33 = sum(el**2 - 2*el*Tz + Tz**2 for el in factor_lst_z) / (N - 1)  # S2z
-
+print(f"\nS2 --> {c11, c22, c33}")
 c12 = (sum((factor_lst_x[i] - Tx) * (factor_lst_y[i] - Ty) for i in range(N)) / (N - 1))
 c13 = (sum((factor_lst_x[i] - Tx) * (factor_lst_z[i] - Tz) for i in range(N)) / (N - 1))
 c23 = (sum((factor_lst_y[i] - Ty) * (factor_lst_z[i] - Tz) for i in range(N)) / (N - 1))
@@ -45,8 +45,19 @@ E1 = x_1[0] * Tx + x_1[1] * Ty + x_1[2] * Tz
 E2 = x_2[0] * Tx + x_2[1] * Ty + x_2[2] * Tz
 print(f"\nE1 = {E1}  E2 = {E2}")
 
-V1 = c11 * x_1[0]**2 + c22 * x_1[1]**2 + c33 * x_1[2]**2 + 2 * c12 * x_1[0] * x_1[1] + 2 * c23 * x_1[1] * x_1[2]
-V2 = c11 * x_2[0]**2 + c22 * x_2[1]**2 + c33 * x_2[2]**2 + 2 * c12 * x_2[0] * x_2[1] + 2 * c23 * x_2[1] * x_2[2]
+V1 = c11 * x_1[0]**2 + \
+     c22 * x_1[1]**2 + \
+     c33 * x_1[2]**2 + \
+     2 * c12 * x_1[0] * x_1[1] + \
+     2 * c13 * x_1[0] * x_1[2] + \
+     2 * c23 * x_1[1] * x_1[2]
+
+V2 = c11 * x_2[0]**2 + \
+     c22 * x_2[1]**2 + \
+     c33 * x_2[2]**2 + \
+     2 * c12 * x_2[0] * x_2[1] + \
+     2 * c13 * x_2[0] * x_2[2] + \
+     2 * c23 * x_2[1] * x_2[2]
 print(f"V1 = {V1}  V2 = {V2}")
 
 V1sqrt = sqrt(V1)
